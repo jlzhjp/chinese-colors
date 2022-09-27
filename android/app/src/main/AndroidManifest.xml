@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chinese_colors">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
    <application
         android:label="chinese_colors"
         android:name="${applicationName}"

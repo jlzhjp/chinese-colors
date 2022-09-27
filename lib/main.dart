@@ -1,8 +1,17 @@
-import 'package:chinese_colors/season_card.dart';
-import "package:flutter/material.dart";
-import "chinese_colors.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import "home_page.dart";
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(const MyApp());
 }
 
@@ -34,40 +43,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: createMaterialColor(const Color(0xffefc4c3)),
-        fontFamily: "LXGWWenKai",
+        fontFamily: 'LXGWWenKai',
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: chineseColors.entries
-                  .map((e) => SeasonCard(
-                      seasonName: e.key.seasonName,
-                      backgroundColor:
-                          Color(e.value.values.first.first.values.first),
-                      verse: "举头望明月，低头思故乡"))
-                  .toList()),
-        ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: createMaterialColor(const Color(0xffefc4c3)),
+        fontFamily: 'LXGWWenKai',
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.class_rounded), label: "分类"),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: "查找")
-      ]),
+      home: const HomePage(),
     );
   }
 }

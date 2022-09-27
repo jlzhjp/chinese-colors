@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
-        "cupertino"
-    ]
+        "cupertino",
+        "LXGW",
+        "RGBO"
+    ],
+    "cmake.configureOnOpen": false
 }
