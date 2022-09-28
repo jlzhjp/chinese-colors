@@ -5,7 +5,7 @@ enum Season {
   winter,
 }
 
-const chineseColors = {
+const Map<Season, Map<String, List<Map<String, int>>>> chineseColors = {
   Season.spring: {
     '立春': [
       {
@@ -33,7 +33,7 @@ const chineseColors = {
         '珊瑚赫': 0xffc12c1f,
       },
     ],
-    '雨水': {
+    '雨水': [
       {
         '盈盈': 0xfff9d3e3,
         '水红': 0xffecb0c1,
@@ -58,7 +58,7 @@ const chineseColors = {
         '碧山': 0xff779649,
         '青青': 0xff4f6f46,
       },
-    },
+    ],
     '惊蛰': [
       {
         '赤缇': 0xffba5b49,
