@@ -19,4 +19,26 @@ extension ColorExtension on Color {
 
     return hslLight.toColor();
   }
+
+  bool isLight() {
+    final hsl = HSLColor.fromColor(this);
+    return hsl.lightness > 0.5;
+  }
+
+  Color toForeground() {
+    return isLight() ? darken(0.5) : lighten(0.5);
+  }
+
+  String toHexString() {
+    return '#${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}';
+  }
+
+  String toCssRgb() {
+    return 'rgb($red, $green, $blue)';
+  }
+
+  String toCssHsl() {
+    var hslColor = HSLColor.fromColor(this);
+    return 'hsl(${hslColor.hue.round()}, ${hslColor.saturation.round()}, ${hslColor.lightness.round()})';
+  }
 }

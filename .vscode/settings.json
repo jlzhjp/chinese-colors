@@ -3,7 +3,8 @@
         "cupertino",
         "LTRB",
         "LXGW",
-        "RGBO"
+        "RGBO",
+        "vsync"
     ],
     "cmake.configureOnOpen": false
 }

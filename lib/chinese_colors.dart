@@ -43,7 +43,7 @@ const Map<Season, Map<String, List<Map<String, int>>>> chineseColors = {
       {
         '葭灰': 0xffbeb1aa,
         '黄埃': 0xffb49273,
-        '老僧衣': 0xffa4624,
+        '老僧衣': 0xffa46244,
         '玄天': 0xff6b5458,
       },
       {
@@ -203,6 +203,12 @@ const Map<Season, Map<String, List<Map<String, int>>>> chineseColors = {
         '漆姑': 0xff5d8351,
         '芰荷': 0xff4f794a,
         '官绿': 0xff2a6e3f,
+      },
+      {
+        '仙米': 0xffd4c9aa,
+        '黄螺': 0xffb4a379,
+        '降真香': 0xff9e8358,
+        '远志': 0xff81663b,
       },
       {
         '嫩鹅黄': 0xfff2c867,
