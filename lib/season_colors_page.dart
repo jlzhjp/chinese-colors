@@ -7,37 +7,24 @@ class SeasonColorsPage extends StatelessWidget {
   final Season season;
   final Color backgroundColor;
 
-  const SeasonColorsPage(
-      {super.key, required this.season, required this.backgroundColor});
+  const SeasonColorsPage({
+    super.key,
+    required this.season,
+    required this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-              child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: ListView(
-                children: chineseColors[season]!.entries.map((entry) {
-              return SolarTermColors(
-                  titleColor: backgroundColor.toForeground(),
-                  solarTermName: entry.key,
-                  colorSets: entry.value);
-            }).toList()),
-          )),
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            left: 10,
-            child: IconButton(
-              color: backgroundColor.toForeground(),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.arrow_back_rounded),
-            ),
-          ),
-        ],
+      appBar: AppBar(title: Text(season.seasonName)),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+        child: ListView(children: [
+          ...chineseColors[season]!.entries.map((entry) => SolarTermColors(
+              titleColor: backgroundColor.toForeground(),
+              solarTermName: entry.key,
+              colorSets: entry.value))
+        ]),
       ),
     );
   }
@@ -63,26 +50,31 @@ class SolarTermColors extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(50, 0, 0, 8),
-            child: Text(
-              solarTermName,
-              style: TextStyle(
-                  fontSize: 30, fontWeight: FontWeight.bold, color: titleColor),
-            ),
-          ),
-          Column(
-              children: colorSets.map((colorSet) {
-            return Row(
-                children: colorSet.entries.map((entry) {
-              return Expanded(
-                child: ColorSwatch(
-                  colorName: entry.key,
-                  color: Color(entry.value),
-                  solarTerm: solarTermName,
-                ),
-              );
-            }).toList());
-          }).toList())
+              padding: const EdgeInsets.fromLTRB(20, 0, 0, 8),
+              child: Text(
+                solarTermName,
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor),
+              )),
+          Column(children: [
+            for (final colorSet in colorSets)
+              Row(children: [
+                for (final entry in colorSet.entries)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ColorSwatch(
+                        key: Key(entry.value.toString()),
+                        colorName: entry.key,
+                        color: Color(entry.value),
+                        solarTerm: solarTermName,
+                      ),
+                    ),
+                  )
+              ])
+          ])
         ],
       ),
     );
@@ -93,11 +85,24 @@ class ColorSwatch extends StatelessWidget {
   final Color color;
   final String solarTerm;
   final String colorName;
-  const ColorSwatch(
-      {super.key,
-      required this.colorName,
-      required this.color,
-      required this.solarTerm});
+  const ColorSwatch({
+    super.key,
+    required this.colorName,
+    required this.color,
+    required this.solarTerm,
+  });
+
+  void _navigateToSwatchPage(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SwatchPage(
+            color: color,
+            name: colorName,
+            solarTerm: solarTerm,
+          ),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,27 +111,21 @@ class ColorSwatch extends StatelessWidget {
       child: Hero(
         tag: colorName,
         child: Card(
-            color: color,
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => SwatchPage(
-                                color: color,
-                                name: colorName,
-                                solarTerm: solarTerm,
-                              ))));
-                },
-                child: Center(
-                    child: Text(
-                  colorName,
-                  style: TextStyle(
-                      color: color.toForeground(),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300),
-                )))),
+          color: color,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => _navigateToSwatchPage(context),
+            child: Center(
+              child: Text(
+                colorName,
+                style: TextStyle(
+                    color: color.toForeground(),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

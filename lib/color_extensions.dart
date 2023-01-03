@@ -39,6 +39,6 @@ extension ColorExtension on Color {
 
   String toCssHsl() {
     var hslColor = HSLColor.fromColor(this);
-    return 'hsl(${hslColor.hue.round()}, ${hslColor.saturation.round()}, ${hslColor.lightness.round()})';
+    return 'hsl(${hslColor.hue.round()}, ${(hslColor.saturation * 100).round()}%, ${(hslColor.lightness * 100).round()}%)';
   }
 }

@@ -22,12 +22,11 @@ class SwatchPage extends StatelessWidget {
     final rgb = color.toCssRgb();
     final hsl = color.toCssHsl();
 
-    return Scaffold(
-      backgroundColor: color,
-      body: Hero(
-        tag: name,
-        child: Material(
-          type: MaterialType.transparency,
+    return Hero(
+      tag: name,
+      child: Scaffold(
+        backgroundColor: color,
+        body: SafeArea(
           child: Stack(
             children: [
               Positioned(
@@ -45,15 +44,16 @@ class SwatchPage extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  left: 10,
-                  top: 10,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded),
-                    color: foreground,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )),
+                left: 5,
+                top: 5,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded),
+                  color: foreground,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
               Positioned(
                   bottom: 30,
                   right: 30,
@@ -61,20 +61,11 @@ class SwatchPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Copyable(
-                        color: foreground,
-                        display: 'HEX: $hex',
-                        copy: hex,
-                      ),
+                          color: foreground, display: 'HEX: $hex', copy: hex),
                       Copyable(
-                        color: foreground,
-                        display: 'RGB: $rgb',
-                        copy: rgb,
-                      ),
+                          color: foreground, display: 'RGB: $rgb', copy: rgb),
                       Copyable(
-                        color: foreground,
-                        display: 'HSL: $hsl',
-                        copy: hsl,
-                      )
+                          color: foreground, display: 'HSL: $hsl', copy: hsl)
                     ],
                   ))
             ],
@@ -85,41 +76,44 @@ class SwatchPage extends StatelessWidget {
   }
 }
 
-class Copyable extends StatelessWidget {
+class Copyable extends StatefulWidget {
   final String display;
   final String copy;
   final Color color;
-  const Copyable(
-      {super.key,
-      required this.display,
-      required this.copy,
-      required this.color});
+
+  const Copyable({
+    super.key,
+    required this.display,
+    required this.copy,
+    required this.color,
+  });
+
+  @override
+  State<Copyable> createState() => _CopyableState();
+}
+
+class _CopyableState extends State<Copyable> {
+  Future<void> _sendTextToClipboard(context) async {
+    final snackBar = SnackBar(
+      content: Text('已复制: ${widget.copy}'),
+      behavior: SnackBarBehavior.floating,
+    );
+
+    final data = ClipboardData(text: widget.copy);
+    await Clipboard.setData(data);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Text(
-        display,
-        style: TextStyle(color: color),
-      ),
+      Text(widget.display, style: TextStyle(color: widget.color)),
       IconButton(
-        icon: Icon(
-          Icons.copy_rounded,
-          color: color,
-        ),
-        onPressed: () async {
-          final snackBar = SnackBar(
-            content: Text(
-              '已复制: $copy',
-              style: const TextStyle(fontFamily: "LXGWWenKai"),
-            ),
-            behavior: SnackBarBehavior.floating,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-          final data = ClipboardData(text: copy);
-          await Clipboard.setData(data);
-        },
+        icon: Icon(Icons.copy_rounded, color: widget.color),
+        onPressed: () async => await _sendTextToClipboard(context),
       )
     ]);
   }

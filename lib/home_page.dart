@@ -9,36 +9,23 @@ import 'season_colors_page.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  void _navigateToSeasonColorPage(BuildContext context, Season season) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return SeasonColorsPage(
+          season: season, backgroundColor: season.dominateColor.lighten(0.4));
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: chineseColors.entries.map(
-              (e) {
-                var backgroundColor = e.value.values.first.first.values.first;
-
-                return SeasonCard(
-                  seasonName: e.key.seasonName,
-                  backgroundColor: Color(backgroundColor),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return SeasonColorsPage(
-                          season: e.key,
-                          backgroundColor: Color(backgroundColor).lighten(0.4));
-                    }));
-                  },
-                );
-              },
-            ).toList()),
-      ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.class_rounded), label: '分类'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: '查找')
-      ]),
-    );
+    return ListView(scrollDirection: Axis.horizontal, children: [
+      for (final season in chineseColors.entries)
+        SeasonCard(
+          seasonName: season.key.seasonName,
+          backgroundColor: season.key.dominateColor,
+          onTap: () => _navigateToSeasonColorPage(context, season.key),
+        )
+    ]);
   }
 }
 
@@ -66,23 +53,18 @@ class SeasonCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Material(
-                  type: MaterialType.transparency,
-                  child: Verse(
-                    topic: seasonName,
-                    style: TextStyle(color: backgroundColor.darken(0.6)),
-                  )),
+              VerseForTopicWidget(
+                topic: seasonName,
+                style: TextStyle(color: backgroundColor.darken(0.6)),
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: VerticalText(
-                    seasonName,
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: backgroundColor.darken(0.8)),
-                  ),
+                child: VerticalText(
+                  seasonName,
+                  style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: backgroundColor.darken(0.8)),
                 ),
               ),
             ],

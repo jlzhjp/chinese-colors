@@ -9,15 +9,8 @@ class VerticalText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      children: text
-          .split("")
-          .map((ch) => Text(
-                ch,
-                style: style,
-              ))
-          .toList(),
-    );
+        direction: Axis.vertical,
+        alignment: WrapAlignment.center,
+        children: [...text.split("").map((ch) => Text(ch, style: style))]);
   }
 }

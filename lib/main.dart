@@ -1,5 +1,8 @@
+import 'package:chinese_colors/search_page.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'home_page.dart';
 
@@ -12,49 +15,104 @@ void main() {
     systemNavigationBarDividerColor: Colors.transparent,
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  runApp(const MyApp());
+  runApp(
+    GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: const MyApp()),
+  );
 }
 
-MaterialColor createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-  Map<int, Color> swatch = {};
-  final int r = color.red, g = color.green, b = color.blue;
+class Route {
+  Icon icon;
+  String title;
+  Widget page;
+  Function? onEnter;
+  Function? onLeave;
 
-  for (int i = 1; i < 10; i++) {
-    strengths.add(0.1 * i);
-  }
-  for (var strength in strengths) {
-    final double ds = 0.5 - strength;
-    swatch[(strength * 1000).round()] = Color.fromRGBO(
-      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
-      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
-      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
-      1,
-    );
-  }
-  return MaterialColor(color.value, swatch);
+  Route({
+    required this.icon,
+    required this.title,
+    required this.page,
+    this.onEnter,
+    this.onLeave,
+  });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) =>
+          MaterialApp(
+        title: '中国传统色',
+        themeMode: ThemeMode.system,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: lightDynamic,
+          fontFamily: 'LXGWWenKai',
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: darkDynamic,
+          brightness: Brightness.dark,
+          fontFamily: 'LXGWWenKai',
+        ),
+        home: Router(routes: [
+          Route(
+            icon: const Icon(Icons.home_rounded),
+            title: "主页",
+            page: const HomePage(),
+          ),
+          Route(
+            icon: const Icon(Icons.search_rounded),
+            title: "搜索",
+            page: const SearchPage(),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
+class Router extends ConsumerStatefulWidget {
+  final List<Route> routes;
+
+  const Router({super.key, required this.routes});
+
+  @override
+  ConsumerState<Router> createState() => _RouterState();
+}
+
+class _RouterState extends ConsumerState<Router> {
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        useMaterial3: true,
-        primarySwatch: createMaterialColor(const Color(0xffefc4c3)),
-        fontFamily: 'LXGWWenKai',
+    return Scaffold(
+      appBar: AppBar(title: const Text("中国传统色")),
+      body: SafeArea(
+        child: IndexedStack(
+          index: _currentIndex,
+          children: [...widget.routes.map((route) => route.page)],
+        ),
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: createMaterialColor(const Color(0xffefc4c3)),
-        fontFamily: 'LXGWWenKai',
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        items: [
+          ...widget.routes.map((route) => BottomNavigationBarItem(
+                icon: route.icon,
+                label: route.title,
+                tooltip: route.title,
+              ))
+        ],
+        onTap: (value) {
+          widget.routes[_currentIndex].onLeave?.call();
+          setState(() => _currentIndex = value);
+          widget.routes[_currentIndex].onEnter?.call();
+        },
       ),
-      home: const HomePage(),
     );
   }
 }

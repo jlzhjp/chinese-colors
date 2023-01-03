@@ -6,5 +6,6 @@
         "RGBO",
         "vsync"
     ],
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 enum Season {
   spring,
   summer,
@@ -651,6 +653,19 @@ extension SeasonExtension on Season {
         return '秋';
       case Season.winter:
         return '冬';
+    }
+  }
+
+  Color get dominateColor {
+    switch (this) {
+      case Season.spring:
+        return const Color(0xFFD7E9B9);
+      case Season.summer:
+        return const Color(0xFF82CD47);
+      case Season.fall:
+        return const Color(0xFFE3C770);
+      case Season.winter:
+        return const Color(0xFF65647C);
     }
   }
 }
